@@ -40,11 +40,11 @@ poisonArr = [];
 magArr = [];
 
 
-Grass = require("./grass.js");
-GrassEater = require("./GrassEater.js");
-Fire = require("./Fire.js");
-Hunter = require("./Hunter.js");
-Mag = require("./Mag.js");
+Grass = require("./grass");
+GrassEater = require("./GrassEater");
+Fire = require("./Fire");
+Hunter = require("./Hunter");
+Mag = require("./Mag");
 function createObject() {
     for (var y = 0; y < matrix.length; ++y) {
         for (var x = 0; x < matrix[y].length; ++x) {
