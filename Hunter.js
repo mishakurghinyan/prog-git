@@ -6,8 +6,18 @@ module.exports = class Hunter extends LivingCreature {
   }
   chooseCell(char) {
     super.getNewCoordinates();
-    super.chooseCell(char);
-  }
+      var found = [];
+      for (var i in this.directions) {
+        var x = this.directions[i][0];
+        var y = this.directions[i][1];
+        if (x >= 0 && x < matrix[0].length && y >= 0 && y < matrix.length) {
+          if (matrix[y][x] == char) {
+            found.push(this.directions[i]);
+          }
+        }
+      }
+      return found;
+    }
 
   eat() {
     let found = this.chooseCell(1);
@@ -47,7 +57,7 @@ module.exports = class Hunter extends LivingCreature {
   }
   move() {
     let found = this.chooseCell(0);
-    let exact = random(found);
+    let exact = found[Math.floor(Math.random() * found.length + 0.5)];
     if (exact) {
       this.energy -= 5;
       let x = exact[0];

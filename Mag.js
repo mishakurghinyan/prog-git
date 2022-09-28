@@ -2,8 +2,18 @@ var LivingCreature = require("./LivingCreature");
 module.exports = class Mag extends LivingCreature {
   chooseCell(char) {
     super.getNewCoordinates();
-    super.chooseCell(char);
-  }
+      var found = [];
+      for (var i in this.directions) {
+        var x = this.directions[i][0];
+        var y = this.directions[i][1];
+        if (x >= 0 && x < matrix[0].length && y >= 0 && y < matrix.length) {
+          if (matrix[y][x] == char) {
+            found.push(this.directions[i]);
+          }
+        }
+      }
+      return found;
+    }
   move() {
     let found = this.chooseCell(0);
     let exact = found[Math.floor(Math.random() * found.length + 0.5)];

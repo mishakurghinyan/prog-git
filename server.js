@@ -1,15 +1,19 @@
-var express = require("express");
+var express = require('express');
 var app = express();
-var server = require("http").Server(app);
-var io = require("socket.io")(server);
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
 var fs = require("fs");
 
 app.use(express.static("."));
 
-app.get("/", function (req, res) {
-  res.redirect("m.html");
+app.get('/', function (req, res) {
+    res.redirect('m.html');
 });
-server.listen(3000);
+
+server.listen(3000, () => {
+  console.log('connected');
+});
+
 
 //
 
@@ -25,13 +29,12 @@ function gener(n, m, q) {
 }
 matrix = gener(10, 10, 7);
 
-io.sockest.emit("send matrix", matrix);
+io.sockets.emit('send matrix', matrix)
 
 fireArr = [];
 grassArr = [];
 grEaterArr = [];
 huntArr = [];
-poisonArr = [];
 magArr = [];
 
 Grass = require("./grass");
@@ -54,9 +57,6 @@ function createObject() {
       } else if (matrix[y][x] == 4) {
         var fire = new Fire(x, y);
         fireArr.push(fire);
-      } else if (matrix[y][x] == 6) {
-        var poison = new Poison(x, y);
-        poisonArr.push(poison);
       } else if (matrix[y][x] == 5) {
         var mag = new Mag(x, y);
         magArr.push(mag);
@@ -82,11 +82,13 @@ function game() {
   for (var i5 in magArr) {
     magArr[i5].move();
   }
-  io.sockest.emit("send matrix", matrix);
+  io.sockets.emit('send matrix', matrix)
 }
 
-setInterval(game, 100);
+setInterval(game, 1000);
 
-io.on("connection", function () {
+io.on('connection', function () {
   createObject(matrix);
-});
+  
+})
+

@@ -1,11 +1,12 @@
-var io = io();
+var socket = io();
 
 var side = 50;
 
+side = 30
+
 function setup() {
-  frameRate(6);
-  createCanvas(matrix[0].length * side + 1, matrix.length * side + 1);
-  background("#acacac");
+    createCanvas(7 * side, 13 * side);
+    background("#acacac");
 }
 
 function nkarel(matrix) {
@@ -23,8 +24,6 @@ function nkarel(matrix) {
         fill("#f61");
       } else if (matrix[y][x] == 7) {
         fill("#111");
-      } else if (matrix[y][x] == 6) {
-        fill("#35601c");
       } else if (matrix[y][x] == 5) {
         fill("#41e");
       }
@@ -35,6 +34,8 @@ function nkarel(matrix) {
   }
 }
 
-setInterval(function () {
-  io.on("send matrix", nkarel);
-}, 1000);
+setInterval(
+  function () {
+  socket.on('send matrix', nkarel)
+  },1000
+)
