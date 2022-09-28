@@ -1,47 +1,57 @@
-var express = require('express');
+var express = require("express");
 var app = express();
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
+var server = require("http").Server(app);
+var io = require("socket.io")(server);
 var fs = require("fs");
 
 app.use(express.static("."));
 
-app.get('/', function (req, res) {
-    res.redirect('m.html');
+app.get("/", function (req, res) {
+  res.redirect("m.html");
 });
 
 server.listen(3000, () => {
-  console.log('connected');
+  console.log("connected");
 });
 
-
 //
+matrix = [];
+var n = 20;
 
-function gener(n, m, q) {
-  var matrix = [];
-  for (var i = 0; i <= n; ++i) {
-    matrix.push([]);
-    for (var j = 0; j <= m; ++j) {
-      matrix[i].push(Math.floor(Math.random() * q));
-    }
-  }
-  return matrix;
+function rand(min, max) {
+  return Math.random() * (max - min) + min;
 }
-matrix = gener(10, 10, 7);
 
-io.sockets.emit('send matrix', matrix)
+for (let i = 0; i < n; i++) {
+  matrix[i] = [];
+  for (let j = 0; j < n; j++) {
+    matrix[i][j] = Math.floor(rand(0, 7));
+  }
+}
+let speed =
+  new Date().getMonth >= 2 && new Date().getMonth() <= 4
+    ? 50
+    : new Date().getMonth >= 5 && new Date().getMonth() <= 7
+    ? 10
+    : new Date().getMonth >= 8 && new Date().getMonth() <= 10
+    ? 1000
+    : 500;
+
+io.sockets.emit("send matrix", matrix);
 
 fireArr = [];
 grassArr = [];
 grEaterArr = [];
 huntArr = [];
 magArr = [];
+burnedArr = [];
 
 Grass = require("./grass");
 GrassEater = require("./GrassEater");
 Fire = require("./Fire");
 Hunter = require("./Hunter");
 Mag = require("./Mag");
+Burn = require("./Burned");
 function createObject() {
   for (var y = 0; y < matrix.length; ++y) {
     for (var x = 0; x < matrix[y].length; ++x) {
@@ -60,6 +70,9 @@ function createObject() {
       } else if (matrix[y][x] == 5) {
         var mag = new Mag(x, y);
         magArr.push(mag);
+      } else if (matrix[y][x] == 7) {
+        var burn = new Burn(x, y);
+        burnedArr.push(burn);
       }
     }
   }
@@ -70,25 +83,27 @@ function game() {
   for (var i in grassArr) {
     grassArr[i].mul();
   }
-  for (var i2 in grEaterArr) {
-    grEaterArr[i2].eat();
+  for (var i in grEaterArr) {
+    grEaterArr[i].eat();
   }
-  for (var i3 in huntArr) {
-    huntArr[i3].eat();
+  for (var i in huntArr) {
+    huntArr[i].eat();
   }
-  for (var i4 in fireArr) {
-    fireArr[i4].born();
+  for (var i in fireArr) {
+    fireArr[i].burn();
   }
-  for (var i5 in magArr) {
-    magArr[i5].move();
+  for (var i in magArr) {
+    magArr[i].move();
   }
-  io.sockets.emit('send matrix', matrix)
+  for (var i in burnedArr) {
+    burnedArr[i].move();
+  }
+
+  io.sockets.emit("send matrix", matrix);
 }
 
-setInterval(game, 1000);
+setInterval(game, speed);
 
-io.on('connection', function () {
+io.on("connection", function () {
   createObject(matrix);
-  
-})
-
+});

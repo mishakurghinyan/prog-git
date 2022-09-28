@@ -33,7 +33,7 @@ module.exports = class Fire extends LivingCreature {
     }
   }
 
-  born() {
+  burn() {
     let found = this.chooseCell(1);
     let exact = found[Math.floor(Math.random() * found.length + 0.5)];
 

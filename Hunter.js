@@ -33,21 +33,23 @@ module.exports = class Hunter extends LivingCreature {
         if (x == grassArr[i].x && y == grassArr[i].y) {
           grassArr.splice(i, 1);
         }
+        matrix[y][x] = 3;
       }
-      matrix[y][x] = 3;
       matrix[this.y][this.x] = 0;
       this.y = y;
       this.x = x;
-    } else if (exact2) {
+    } 
+    if (exact2) {
       this.energy += 5;
       let x = exact2[0];
       let y = exact2[1];
-      for (var i2 = 0; i2 < grEaterArr.length; i2++) {
-        if (x == grEaterArr[i2].x && y == grEaterArr[i2].y) {
-          grEaterArr.splice(i2, 1);
+      for (var i = 0; i < grEaterArr.length; i++) {
+        if (x == grEaterArr[i].x && y == grEaterArr[i].y) {
+          grEaterArr.splice(i, 1);
         }
+        matrix[y][x] = 3;
       }
-      matrix[y][x] = 3;
+
       matrix[this.y][this.x] = 0;
       this.y = y;
       this.x = x;
@@ -71,9 +73,6 @@ module.exports = class Hunter extends LivingCreature {
       }
     } else {
       this.energy--;
-      if (this.energy <= 0) {
-        this.die();
-      }
     }
   }
   die() {
