@@ -8,18 +8,18 @@ module.exports = class GrassEater extends LivingCreature {
 
   chooseCell(char) {
     super.getNewCoordinates();
-      var found = [];
-      for (var i in this.directions) {
-        var x = this.directions[i][0];
-        var y = this.directions[i][1];
-        if (x >= 0 && x < matrix[0].length && y >= 0 && y < matrix.length) {
-          if (matrix[y][x] == char) {
-            found.push(this.directions[i]);
-          }
+    var found = [];
+    for (var i in this.directions) {
+      var x = this.directions[i][0];
+      var y = this.directions[i][1];
+      if (x >= 0 && x < matrix[0].length && y >= 0 && y < matrix.length) {
+        if (matrix[y][x] == char) {
+          found.push(this.directions[i]);
         }
       }
-      return found;
     }
+    return found;
+  }
   mul() {
     let found = this.chooseCell(0);
     let exact = found[Math.floor(Math.random() * found.length + 0.5)];
@@ -27,14 +27,13 @@ module.exports = class GrassEater extends LivingCreature {
       let x = exact[0];
       let y = exact[1];
       matrix[y][x] = 2;
-      let eater = new GrassEater(x, y);
-      grEaterArr.push(eater);
+      grEaterArr.push(new GrassEater(x, y));
       this.energy = 20;
     }
   }
   eat() {
     let found = this.chooseCell(1);
-    let exact = found[Math.floor(Math.random() * found.length + 0.5)];;
+    let exact = found[Math.floor(Math.random() * found.length + 0.5)];
     if (exact) {
       this.energy += 5;
       let x = exact[0];
@@ -42,9 +41,10 @@ module.exports = class GrassEater extends LivingCreature {
       for (var i = 0; i < grassArr.length; i++) {
         if (x == grassArr[i].x && y == grassArr[i].y) {
           grassArr.splice(i, 1);
+          matrix[y][x] = 2;
         }
       }
-      matrix[y][x] = 2;
+
       matrix[this.y][this.x] = 0;
       this.y = y;
       this.x = x;
@@ -56,10 +56,10 @@ module.exports = class GrassEater extends LivingCreature {
     }
   }
   move() {
+    this.energy -= 5;
     let found = this.chooseCell(0);
-    let exact = found[Math.floor(Math.random() * found.length + 0.5)];;
+    let exact = found[Math.floor(Math.random() * found.length + 0.5)];
     if (exact) {
-      this.energy -= 5;
       let x = exact[0];
       let y = exact[1];
       matrix[y][x] = 2;
@@ -69,19 +69,14 @@ module.exports = class GrassEater extends LivingCreature {
       if (this.energy < 0) {
         this.die();
       }
-    } else {
-      this.energy--;
-      if (this.energy < 0) {
-        this.die();
-      }
     }
   }
   die() {
     for (var i = 0; i < grEaterArr.length; i++) {
       if (this.x == grEaterArr[i].x && this.y == grEaterArr[i].y) {
         grEaterArr.splice(i, 1);
+        matrix[this.y][this.x] = 0;
       }
-      matrix[this.y][this.x] = 0;
     }
   }
 };

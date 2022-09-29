@@ -16,18 +16,18 @@ server.listen(3000, () => {
 
 //
 matrix = [];
-var n = 20;
-
-function rand(min, max) {
-  return Math.random() * (max - min) + min;
-}
-
-for (let i = 0; i < n; i++) {
-  matrix[i] = [];
-  for (let j = 0; j < n; j++) {
-    matrix[i][j] = Math.floor(rand(0, 7));
+let matr = (function (n) {
+  function rand(min, max) {
+    return Math.random() * (max - min) + min;
   }
-}
+
+  for (let i = 0; i < n; i++) {
+    matrix[i] = [];
+    for (let j = 0; j < n; j++) {
+      matrix[i][j] = Math.floor(rand(0, 7));
+    }
+  }
+})(10);
 let speed =
   new Date().getMonth >= 2 && new Date().getMonth() <= 4
     ? 50
@@ -96,14 +96,128 @@ function game() {
     magArr[i].move();
   }
   for (var i in burnedArr) {
-    burnedArr[i].move();
+    burnedArr[i].bloom();
   }
 
   io.sockets.emit("send matrix", matrix);
 }
 
-setInterval(game, speed);
+let stopInterval = setInterval(game, speed);
 
-io.on("connection", function () {
+function clean() {
+  huntArr = [];
+  magArr = [];
+  burnedArr = [];
+  grassArr = [];
+  grassEaterArr = [];
+  fireArr = [];
+
+  for (var y = 0; y < matrix.length; y++) {
+    for (var x = 0; x < matrix[y].length; x++) {
+      matrix[y][x] = 0;
+    }
+  }
+  io.sockets.emit("send matrix", matrix);
+}
+
+function addGrass() {
+  for (var i = 0; i < 7; i++) {
+    var x = Math.floor(Math.random() * matrix[0].length);
+    var y = Math.floor(Math.random() * matrix.length);
+    if (matrix[y][x] == 0) {
+      matrix[y][x] = 1;
+      var gr = new Grass(x, y);
+      grassArr.push(gr);
+    }
+  }
+  io.sockets.emit("send matrix", matrix);
+}
+function addGrassEater() {
+  for (var i = 0; i < 7; i++) {
+    var x = Math.floor(Math.random() * matrix[0].length);
+    var y = Math.floor(Math.random() * matrix.length);
+    if (matrix[y][x] == 0) {
+      matrix[y][x] = 2;
+      grEaterArr.push(new GrassEater(x, y));
+    }
+  }
+  io.sockets.emit("send matrix", matrix);
+}
+
+function addHunter() {
+  for (var i = 0; i < 7; i++) {
+    var x = Math.floor(Math.random() * matrix[0].length);
+    var y = Math.floor(Math.random() * matrix.length);
+    if (matrix[y][x] == 0) {
+      matrix[y][x] = 3;
+      huntArr.push(new Hunter(x, y));
+    }
+  }
+  io.sockets.emit("send matrix", matrix);
+}
+
+function addMag() {
+  for (var i = 0; i < 7; i++) {
+    var x = Math.floor(Math.random() * matrix[0].length);
+    var y = Math.floor(Math.random() * matrix.length);
+    if (matrix[y][x] == 0) {
+      matrix[y][x] = 5;
+      magArr.push(new Mag(x, y));
+    }
+  }
+  io.sockets.emit("send matrix", matrix);
+}
+
+function addFire() {
+  for (var i = 0; i < 7; i++) {
+    var x = Math.floor(Math.random() * matrix[0].length);
+    var y = Math.floor(Math.random() * matrix.length);
+    if (matrix[y][x] == 0) {
+      matrix[y][x] = 4;
+      fireArr.push(new Fire(x, y));
+    }
+  }
+  io.sockets.emit("send matrix", matrix);
+}
+
+io.on("connection", function (socket) {
   createObject(matrix);
+  socket.on("clean", clean);
+  socket.on("add grass", addGrass);
+  socket.on("add grassEater", addGrassEater);
+  socket.on("add Hunter", addHunter);
+  socket.on("add Mag", addMag);
+  socket.on("add Fire", addFire);
+  socket.on("Stop", stop);
+  socket.on("Continue", cont);
+
 });
+
+var statistics = {};
+let statusInterval = setInterval(function () {
+  statistics.Grass = grassArr.length;
+  statistics.GrassEater = grEaterArr.length;
+  statistics.Fire = fireArr.length;
+  statistics.Hunter = huntArr.length;
+  statistics.Mag = magArr.length;
+  statistics.Burned = burnedArr.length;
+  fs.writeFile("statistics.json", JSON.stringify(statistics), () => {});
+}, 1000);
+
+function stop() {
+  clearInterval(stopInterval);
+  clearInterval(statusInterval);
+
+}
+function cont() {
+  stopInterval = setInterval(game, speed);
+  statusInterval = setInterval(function () {
+    statistics.Grass = grassArr.length;
+    statistics.GrassEater = grEaterArr.length;
+    statistics.Fire = fireArr.length;
+    statistics.Hunter = huntArr.length;
+    statistics.Mag = magArr.length;
+    statistics.Burned = burnedArr.length;
+    fs.writeFile("statistics.json", JSON.stringify(statistics), () => {});
+  }, 1000);
+}

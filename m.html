@@ -9,11 +9,24 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
     <title>Class</title>
+    <link rel="stylesheet" href="style.css" />
     <script src="/socket.io/socket.io.js"></script>
-    
   </head>
 
   <body>
+    <header>
+      <div class="header">The Game Of Life</div>
+    </header>
+    <br /><br />
+    <button class="addButton Grass" onclick="addGrass()">Add Grass</button> <br />
+    <button class="addButton Grass-Eater" onclick="addGrassEater()">Add Grass Eater</button> <br />
+    <button class="addButton Hunter" onclick="addHunter()">Add Hunter</button> <br />
+    <button class="addButton Mag" onclick="addMag()">Add Mag</button> <br />
+    <button class="addButton Fire" onclick="addFire()">Add Fire</button><br /> 
+    <button class="addButton Clean" onclick="clean()">Clean</button><br />
+    <button class="addButton Stop" id ="Stop" onclick="stop()">Stop</button><br />
+    <div class ="statistic" id ="statistic"></div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.14/p5.js"></script>
     <script src="script.js"></script>
   </body>
