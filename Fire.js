@@ -20,9 +20,22 @@ module.exports = class Fire extends LivingCreature {
   }
 
   burn() {
+    switch (weather) {
+      case "spring":
+        this.energy -= 5;
+        break;
+        case "summer":
+          this.energy += 10;
+        break;
+        case "autumn":
+        this.energy -= 3;
+        break;
+        case "winter":
+          return;
+    }
     let found = this.chooseCell(1);
     let exact = found[Math.floor(Math.random() * found.length + 0.5)];
-
+    
     if (exact) {
       this.energy += 5;
       let x = exact[0];

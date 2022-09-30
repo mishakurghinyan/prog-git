@@ -3,6 +3,7 @@ module.exports = class Hunter extends LivingCreature {
   constructor(x, y) {
     super(x, y);
     this.energy = 20;
+    this.multiplay = 10;
   }
   chooseCell(char) {
     super.getNewCoordinates();
@@ -20,6 +21,19 @@ module.exports = class Hunter extends LivingCreature {
   }
 
   eat() {
+    switch (weather) {
+      case "spring":
+        this.energy--;
+        break;
+        case "summer":
+        break;
+        case "autumn":
+        this.energy -= 2;
+        break;
+        case "winter":
+        this.energy -= 5;
+        break;
+    }
     let found = this.chooseCell(1);
     let found2 = this.chooseCell(2);
     let exact = found[Math.floor(Math.random() * found.length + 0.5)];

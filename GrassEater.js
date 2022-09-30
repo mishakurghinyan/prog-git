@@ -4,6 +4,7 @@ module.exports = class GrassEater extends LivingCreature {
   constructor(x, y) {
     super(x, y);
     this.energy = 20;
+    this.multiplay = 12;
   }
 
   chooseCell(char) {
@@ -23,7 +24,7 @@ module.exports = class GrassEater extends LivingCreature {
   mul() {
     let found = this.chooseCell(0);
     let exact = found[Math.floor(Math.random() * found.length + 0.5)];
-    if (exact && this.energy >= 12) {
+    if (exact && this.energy >= this.multiplay) {
       let x = exact[0];
       let y = exact[1];
       matrix[y][x] = 2;
@@ -32,6 +33,23 @@ module.exports = class GrassEater extends LivingCreature {
     }
   }
   eat() {
+    switch (weather) {
+      case "spring":
+        this.multiplay = 15;
+        this.energy--;
+        break;
+        case "summer":
+        this.multiplay = 10;
+        break;
+        case "autumn":
+        this.multiplay = 20;
+        this.energy--;
+        break;
+        case "winter":
+        this.multiplay = 25;
+        this.energy--;
+        break;
+    }
     let found = this.chooseCell(1);
     let exact = found[Math.floor(Math.random() * found.length + 0.5)];
     if (exact) {
@@ -79,4 +97,5 @@ module.exports = class GrassEater extends LivingCreature {
       }
     }
   }
+
 };

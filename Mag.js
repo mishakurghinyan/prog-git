@@ -19,6 +19,7 @@ module.exports = class Mag extends LivingCreature {
     return found;
   }
   move() {
+    if(weather == "winter") return;
     this.energy -= 5;
     let found = this.chooseCell(0);
     let exact = found[Math.floor(Math.random() * found.length + 0.5)];

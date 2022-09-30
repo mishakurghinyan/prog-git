@@ -87,6 +87,18 @@ header {
     color:rgb(255, 255, 255);
     transition: .3s;    
 }
+.addButton.Rain{
+    font-size: 25px;
+    border:none;
+    width: 11%;
+    font-family: "Raleway-Regular";
+    padding: 15px;
+    text-align: center;
+    background: url("./IMGs/blue-rain-drops-on-white-background_1017-33598.jpg") center center no-repeat;
+    background-size: 100%;
+    border-radius: 50px;
+    transition: .3s;    
+}
 .addButton.Mag{
     font-size: 25px;
     border:none;

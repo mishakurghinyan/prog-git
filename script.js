@@ -5,21 +5,13 @@ var side = 50;
 let stat = document.getElementById("statistic")
 
 
-let weather =
-  (new Date().getMonth >= 2 && new Date().getMonth() <= 4)
-    ? "spring"
-    : (new Date().getMonth >= 5 && new Date().getMonth() <= 7)
-    ? "summer"
-    : (new Date().getMonth >= 8 && new Date().getMonth() <= 10)
-    ? "winter"
-    : "autumn";
-
+socket.on("weather", (data) => weather = data)
 let speed =
-    (new Date().getMonth >= 2 && new Date().getMonth() <= 4)
+    (new Date().getMonth() >= 2 && new Date().getMonth() <= 4)
     ? 50
-    : (new Date().getMonth >= 5 && new Date().getMonth() <= 7)
+    : (new Date().getMonth() >= 5 && new Date().getMonth() <= 7)
     ? 10
-    : (new Date().getMonth >= 8 && new Date().getMonth() <= 10)
+    : (new Date().getMonth() >= 8 && new Date().getMonth() <= 10)
     ? 1000
     : 500;
 function setup() {
@@ -50,11 +42,11 @@ function nkarel(matrix) {
       } else if (matrix[y][x] == 3) {
         fill("red");
       } else if (matrix[y][x] == 4) {
-        fill("#f61");
+        if (weather != "winter") fill("#f61");
       } else if (matrix[y][x] == 7) {
         fill("#000");
       } else if (matrix[y][x] == 5) {
-        fill("#41e");
+        if (weather != "winter") fill("#41e");
       }
       rect(x * side, y * side, side, side);
     }
@@ -94,10 +86,25 @@ function addMag() {
 function addFire() {
   socket.emit("add Fire")
 }
+function fillGrass() {
+  socket.emit("fill Grass")
+}
+function fillGrassEater() {
+  socket.emit("fill GrassEater")
+}
+function fillHunter() {
+  socket.emit("fill Hunter")
+}
+function fillMag() {
+  socket.emit("fill Mag")
+}
+function fillFire() {
+  socket.emit("fill Fire")
+}
 function stop() {
   stopId.innerHTML = "Continue";
   stopId.className = "addButton Cont";
-  stopId.onclick = () => cont()
+  stopId.onclick = () => cont();
   clearInterval(jsonInterval);
   socket.emit("Stop");
 }
@@ -118,4 +125,8 @@ function cont() {
     Burned: ${json.Burned}`)
   }, speed);
   socket.emit("Continue");
+}
+
+function rain() {
+  socket.emit("Rain");
 }

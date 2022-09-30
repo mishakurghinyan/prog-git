@@ -15,6 +15,18 @@ server.listen(3000, () => {
 });
 
 //
+
+weather =  (new Date().getMonth() >= 2 && new Date().getMonth() <= 4)
+    ? "spring"
+    : (new Date().getMonth() >= 5 && new Date().getMonth() <= 7)
+    ? "summer"
+    : (new Date().getMonth() >= 8 && new Date().getMonth() <= 10)
+    ? "autumn"
+    : "winter";
+setInterval(() => io.sockets.emit('weather', weather),1000)
+
+
+
 matrix = [];
 let matr = (function (n) {
   function rand(min, max) {
@@ -56,23 +68,17 @@ function createObject() {
   for (var y = 0; y < matrix.length; ++y) {
     for (var x = 0; x < matrix[y].length; ++x) {
       if (matrix[y][x] == 1) {
-        var gr = new Grass(x, y);
-        grassArr.push(gr);
+        grassArr.push(new Grass(x, y));
       } else if (matrix[y][x] == 2) {
-        var greater = new GrassEater(x, y);
-        grEaterArr.push(greater);
+        grEaterArr.push(new GrassEater(x, y));
       } else if (matrix[y][x] == 3) {
-        var hunter = new Hunter(x, y);
-        huntArr.push(hunter);
+        huntArr.push(new Hunter(x, y));
       } else if (matrix[y][x] == 4) {
-        var fire = new Fire(x, y);
-        fireArr.push(fire);
+        if(weather != "winter") fireArr.push(new Fire(x, y));
       } else if (matrix[y][x] == 5) {
-        var mag = new Mag(x, y);
-        magArr.push(mag);
+        if(weather != "winter") magArr.push(new Mag(x, y));
       } else if (matrix[y][x] == 7) {
-        var burn = new Burn(x, y);
-        burnedArr.push(burn);
+        burnedArr.push(new Burn(x, y));
       }
     }
   }
@@ -90,10 +96,10 @@ function game() {
     huntArr[i].eat();
   }
   for (var i in fireArr) {
-    fireArr[i].burn();
+    if(weather != "winter") fireArr[i].burn();
   }
   for (var i in magArr) {
-    magArr[i].move();
+    if(weather != "winter") magArr[i].move();
   }
   for (var i in burnedArr) {
     burnedArr[i].bloom();
@@ -126,8 +132,7 @@ function addGrass() {
     var y = Math.floor(Math.random() * matrix.length);
     if (matrix[y][x] == 0) {
       matrix[y][x] = 1;
-      var gr = new Grass(x, y);
-      grassArr.push(gr);
+      grassArr.push(new Grass(x, y));
     }
   }
   io.sockets.emit("send matrix", matrix);
@@ -179,6 +184,18 @@ function addFire() {
   }
   io.sockets.emit("send matrix", matrix);
 }
+function rain() {
+  for(let y of matrix) {
+    if(weather == "winter") return;
+    for(let x of y) {
+      grassArr.forEach(i => i.multiplay += 10);
+      fireArr.forEach(i => i.die());
+      if(x == 4) {
+        x = 7
+      }
+    }
+  }
+}
 
 io.on("connection", function (socket) {
   createObject(matrix);
@@ -188,9 +205,14 @@ io.on("connection", function (socket) {
   socket.on("add Hunter", addHunter);
   socket.on("add Mag", addMag);
   socket.on("add Fire", addFire);
+  socket.on("Rain", rain);
+  socket.on("fill Grass", fillGrass);
+  socket.on("fill GrassEater", fillGrassEater);
+  socket.on("fill Hunter", fillHunter);
+  socket.on("fill Mag", fillMag);
+  socket.on("fill Fire", fillFire);
   socket.on("Stop", stop);
   socket.on("Continue", cont);
-
 });
 
 var statistics = {};
@@ -220,4 +242,61 @@ function cont() {
     statistics.Burned = burnedArr.length;
     fs.writeFile("statistics.json", JSON.stringify(statistics), () => {});
   }, 1000);
+}
+
+function fillGrass() {
+  for (let y = 0; y < matrix.length; y++) {
+    for(let x = 0; x < matrix[y].length; x++) {
+      if (matrix[y][x] == 0) {
+        matrix[y][x] = 1;
+        grassArr.push(new Grass(x, y));
+      }
+    }
+  }
+  io.sockets.emit("send matrix", matrix);
+}
+
+function fillGrassEater() {
+  for (let y = 0; y < matrix.length; y++) {
+    for(let x = 0; x < matrix[y].length; x++) {
+      if (matrix[y][x] == 0) {
+        matrix[y][x] = 2;
+        grEaterArr.push(new GrassEater(x, y));
+      }
+    }
+  }
+  io.sockets.emit("send matrix", matrix);
+}
+function fillHunter() {
+  for (let y = 0; y < matrix.length; y++) {
+    for(let x = 0; x < matrix[y].length; x++) {
+      if (matrix[y][x] == 0) {
+        matrix[y][x] = 3;
+        huntArr.push(new Hunter(x, y));
+      }
+    }
+  }
+  io.sockets.emit("send matrix", matrix);
+}
+function fillMag() {
+  for (let y = 0; y < matrix.length; y++) {
+    for(let x = 0; x < matrix[y].length; x++) {
+      if (matrix[y][x] == 0) {
+        matrix[y][x] = 5;
+        magArr.push(new Mag(x, y));
+      }
+    }
+  }
+  io.sockets.emit("send matrix", matrix);
+}
+function fillFire() {
+  for (let y = 0; y < matrix.length; y++) {
+    for(let x = 0; x < matrix[y].length; x++) {
+      if (matrix[y][x] == 0) {
+        matrix[y][x] = 4;
+        fireArr.push(new Fire(x, y));
+      }
+    }
+  }
+  io.sockets.emit("send matrix", matrix);
 }
