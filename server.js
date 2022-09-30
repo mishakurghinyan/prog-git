@@ -109,7 +109,7 @@ function clean() {
   magArr = [];
   burnedArr = [];
   grassArr = [];
-  grassEaterArr = [];
+  grEaterArr = [];
   fireArr = [];
 
   for (var y = 0; y < matrix.length; y++) {
