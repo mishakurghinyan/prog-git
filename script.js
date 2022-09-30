@@ -24,7 +24,7 @@ let speed =
     : 500;
 function setup() {
   createCanvas(10 * side + 1, 10 * side + 1); /* ete uzum eq or sax matrican cuyc ta gnaceq server.js-i
-   mej gteq matr function expression-y u nayeq te inch n-ov e ayn kanchvac im depqum 20
+   mej gteq matr function expression-y u nayeq te inch n-ov e ayn kanchvac im depqum 10
    heto areq aystex u createCanvas-i mej greq n = 10 * side + 1, n = 10 * side + 1. + 1 vor tesnenq nranc cayreri gcery
    */
   background("#acacac");
