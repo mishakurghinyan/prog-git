@@ -43,6 +43,7 @@ header {
     font-size: 25px;
     border:none;
     width: 11%;
+    height: 60px;
     font-family: "Raleway-Regular";
     padding: 15px;
     text-align: center;
@@ -55,6 +56,7 @@ header {
     font-size: 25px;
     border:none;
     width: 11%;
+    height: 60px;
     font-family: "Raleway-Regular";
     padding: 15px;
     text-align: center;
@@ -67,6 +69,7 @@ header {
     font-size: 25px;
     border:none;
     width: 11%;
+    height: 100px;
     font-family: "Raleway-Regular";
     padding: 15px;
     text-align: center;
@@ -79,6 +82,7 @@ header {
     font-size: 25px;
     border:none;
     width: 11%;
+    height: 60px;
     font-family: "Raleway-Regular";
     padding: 15px;
     text-align: center;
@@ -88,9 +92,13 @@ header {
     transition: .3s;    
 }
 .addButton.Rain{
+    position: absolute;
+    bottom: 10%;
+    right: 30%;
     font-size: 25px;
     border:none;
-    width: 11%;
+    width: 15%;
+    height: 60px;
     font-family: "Raleway-Regular";
     padding: 15px;
     text-align: center;
@@ -115,6 +123,7 @@ header {
     font-size: 25px;
     border:none;
     width: 11%;
+    height: 60px;
     font-family: "Raleway-Regular";
     background-color: rgb(255, 191, 52);
     padding: 15px;
@@ -126,8 +135,12 @@ header {
 
 .addButton.Clean{
     font-size: 25px;
+    position: absolute;
+    bottom: 10%;
+    left: 30%;
     border:none;
-    width: 11%;
+    width: 15%;
+    height: 60px;
     font-family: "Raleway-Regular";
     padding: 15px;
     text-align: center;
